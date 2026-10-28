@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urdu Islamic Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eaf7ee;
+      text-align: center;
+      padding: 20px;
+      color: #164b32;
+    }
+    .card {
+      background: white;
+      max-width: 420px;
+      margin: 30px auto;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px #0002;
+    }
+    h1 { color: #087443; }
+    button {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    button:hover { background: #055631; }
+    #message { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🕌 اسلامی کوئز</h1>
+    <p>اسلامی معلومات جانچیں اور نئی باتیں سیکھیں!</p>
+    <h3 id="question"></h3>
+    <div id="answers"></div>
+    <p id="message"></p>
+    <p id="progress"></p>
+    <button id="next" onclick="nextQuestion()" hidden>اگلا سوال</button>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        q: "خانہ کعبہ کس شہر میں ہے؟",
+        a: ["مدینہ منورہ", "مکہ مکرمہ", "جدہ", "طائف"],
+        correct: 1
+      },
+      {
+        q: "قرآن مجید کس نبی پر نازل ہوا؟",
+        a: ["حضرت موسیٰؑ", "حضرت عیسیٰؑ", "حضرت محمد ﷺ", "حضرت ابراہیمؑ"],
+        correct: 2
+      },
+      {
+        q: "اسلام کے بنیادی ارکان کتنے ہیں؟",
+        a: ["تین", "چار", "پانچ", "چھ"],
+        correct: 2
+      },
+      {
+        q: "مسلمان دن میں کتنی فرض نمازیں پڑھتے ہیں؟",
+        a: ["تین", "چار", "پانچ", "چھ"],
+        correct: 2
+      },
+      {
+        q: "قرآن مجید کی پہلی سورت کون سی ہے؟",
+        a: ["سورۃ البقرہ", "سورۃ الفاتحہ", "سورۃ الاخلاص", "سورۃ الناس"],
+        correct: 1
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function showQuestion() {
+      answered = false;
+      document.getElementById("message").textContent = "";
+      document.getElementById("next").hidden = true;
+      document.getElementById("question").textContent = quiz[current].q;
+      document.getElementById("progress").textContent =
+        "سوال " + (current + 1) + " / " + quiz.length;
+
+      const box = document.getElementById("answers");
+      box.innerHTML = "";
+
+      quiz[current].a.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.textContent = answer;
+        button.onclick = () => checkAnswer(index);
+        box.appendChild(button);
+      });
+    }
+
+    function checkAnswer(index) {
+      if (answered) return;
+      answered = true;
+
+      const buttons = document.querySelectorAll("#answers button");
+      buttons.forEach(button => button.disabled = true);
+
+      if (index === quiz[current].correct) {
+        score++;
+        document.getElementById("message").textContent =
+          "ماشاءاللہ! درست جواب 🌟";
+      } else {
+        document.getElementById("message").textContent =
+          "درست جواب: " + quiz[current].a[quiz[current].correct];
+      }
+
+      document.getElementById("next").hidden = false;
+      document.getElementById("next").textContent =
+        current === quiz.length - 1 ? "نتیجہ دیکھیں" : "اگلا سوال";
+    }
+
+    function nextQuestion() {
+      if (current < quiz.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        document.querySelector(".card").innerHTML =
+          "<h1>ماشاءاللہ! 🎉</h1>" +
+          "<h2>آپ کا نتیجہ</h2>" +
+          "<p>آپ نے " + quiz.length + " میں سے " + score +
+          " درست جواب دیے۔</p>" +
+          "<button onclick='location.reload()'>دوبارہ کھیلیں</button>";
+      }
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
